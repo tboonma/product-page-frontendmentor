@@ -29,7 +29,10 @@
       "react-app",
       "react-app/jest"
     ],
-    "ignorePatterns": ["node_modules/*"]
+    "ignorePatterns": [
+      "node_modules/*",
+      "*.css"
+    ]
   },
   "browserslist": {
     "production": [
