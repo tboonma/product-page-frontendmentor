@@ -1,12 +1,10 @@
 name: Product-Page-CI
 
-on:
-  push:
-  pull_request:
-  workflow_dispatch:
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   lint:
+    name: lint-test
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -19,6 +17,8 @@ jobs:
       - run: npm ci
       - run: npm run lint
   test:
+    name: test
+    needs: lint
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -30,3 +30,20 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
       - run: npm run test
+  publish:
+    needs: [lint, test]
+    if: $GITHUB_REF_TYPE == 'branch' && $GITHUB_REF_NAME == 'main'
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build Project Artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
