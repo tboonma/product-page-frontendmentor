@@ -32,7 +32,7 @@ jobs:
       - run: npm run test
   publish:
     needs: [lint, test]
-    if: ${{ env.GITHUB_REF_TYPE == 'branch' && env.GITHUB_REF_NAME == 'main' }}
+    if: ${{ GITHUB_REF_TYPE == 'branch' && GITHUB_REF_NAME == 'main' }}
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
