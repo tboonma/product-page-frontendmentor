@@ -1,3 +1,3 @@
 export interface ImageSectionProps {
-       imageUrls: string[]
+  imageUrls: string[]
 }
