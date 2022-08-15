@@ -1,6 +1,11 @@
 name: Product-Page-CI
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   lint:
@@ -59,7 +64,7 @@ jobs:
           echo "::set-output name=deploy-output::$(vercel --token=${{ secrets.VERCEL_TOKEN }})"
       - name: Notify update in PR
         uses: thollander/actions-comment-pull-request@v1
-        if: success() && github.event.action == 'opened'
+        if: success()
         with:
           message: |
             New beta version for this Pull Request has been released
